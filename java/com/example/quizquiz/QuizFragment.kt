@@ -1,29 +1,94 @@
 package com.example.quizquiz
 
+import android.os.AsyncTask
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import com.example.quizquiz.database.Quiz
+import com.example.quizquiz.database.QuizDatabase
+import kotlin.math.log
 
-class QuizFragment : Fragment() {
+class QuizFragment : Fragment(),
+    QuizStartFragment.QuizStartListener,
+    QuizSolveFragment.QuizSolveListener,
+        QuizResultFragment.QuizResultListener
+{
+    lateinit var db : QuizDatabase
+    lateinit var quizList : List<Quiz>
+    var currentQuizIdx = 0
+    var correctCount = 0
 
+    override fun onRetry() {
+        childFragmentManager
+            .beginTransaction()
+            .replace(R.id.fragment_container,
+                QuizStartFragment())
+            .commit()
+    }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onAnswerSelected(isCorrect: Boolean) {
+        currentQuizIdx++
+
+        if(currentQuizIdx == quizList.size){
+            childFragmentManager
+                .beginTransaction()
+                .replace(R.id.fragment_container,
+                    QuizResultFragment.newInstance(correctCount, quizList.size))
+                .commit()
+        }else{
+            if(isCorrect) {
+                correctCount++
+                Toast.makeText(activity, "정답!", Toast.LENGTH_SHORT).show()
+            }
+            else {
+                Toast.makeText(activity, "오답!", Toast.LENGTH_SHORT).show()
+            }
+            childFragmentManager
+                .beginTransaction()
+                .replace(R.id.fragment_container,
+                    QuizSolveFragment.newInstance(quizList[currentQuizIdx]))
+                .commit()
+        }
+
+    }
+
+    override fun onQuizStart() {
+        Log.d("mytag", "시작하기!!!")
+
+        AsyncTask.execute {
+            currentQuizIdx = 0
+            correctCount = 0
+            quizList = db.quizDAO().getAll()
+
+            childFragmentManager
+                .beginTransaction()
+                .replace(R.id.fragment_container,
+                    QuizSolveFragment.newInstance(quizList[currentQuizIdx]))
+                .commit()
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) : View? {
-        return inflater.inflate(R.layout.quiz_fragment, container, false)
+        val view = inflater.inflate(
+            R.layout.quiz_fragment,
+            container,
+            false)
+
+        db = QuizDatabase.getInstance(requireContext())
+
+        childFragmentManager    //support 매니저가 아님!!
+            .beginTransaction().add(R.id.fragment_container,
+                QuizStartFragment())
+            .commit()
+
+        return view
     }
 
-    companion object {
-//        fun newInstance(param1: String, param2: String) =
-//            QuizFragment().apply {
-//                arguments = Bundle().apply {
-//                    putString(ARG_PARAM1, param1)
-//                    putString(ARG_PARAM2, param2)
-//                }
-//            }
-    }
+
+
+
 }

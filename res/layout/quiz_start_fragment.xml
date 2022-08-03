@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ImageView
+        android:src="@drawable/quiz"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_gravity="center"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="코딩 퀴즈 앱"
+        android:textSize="20dp"
+        android:textStyle="bold" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="퀴즈를 풀기 전에 마음에 준비를 해주세요.\n 꼼꼼히 읽고 퀴즈 풀기를 눌러주세요." />
+
+    <Button
+        android:id="@+id/start"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:text="지금 퀴즈 풀기"
+        android:background="@drawable/solid_button"
+        android:layout_marginTop="70dp"
+        android:layout_marginLeft="50dp"
+        android:gravity="center"
+        />
+
+</LinearLayout>

@@ -21,7 +21,7 @@ import javax.xml.parsers.DocumentBuilderFactory
 
 class MainActivity : AppCompatActivity() {
     lateinit var drawerToggle: ActionBarDrawerToggle
-    lateinit var db : QuizDatabase
+    lateinit var db: QuizDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,9 +33,17 @@ class MainActivity : AppCompatActivity() {
 //            Quiz(type="OX", question="asdf", answer="", category="?")
 //        )
 
-        val sp : SharedPreferences = getSharedPreferences(
-            "pref", Context.MODE_PRIVATE)
-        if(sp.getBoolean("initialized", true)) {
+        Thread(Runnable {
+            for (quiz in db.quizDAO().getAll()) {
+                Log.d("mytag", quiz.toString())
+            }
+        }).start()
+
+
+        val sp: SharedPreferences = getSharedPreferences(
+            "pref", Context.MODE_PRIVATE
+        )
+        if (sp.getBoolean("initialized", true)) {
             initQuizDataFromXMLFile()
             val editor = sp.edit()
             editor.putBoolean("initialized", false)
@@ -86,7 +94,6 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
 
-
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -96,14 +103,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(drawerToggle.onOptionsItemSelected(item)){
+        if (drawerToggle.onOptionsItemSelected(item)) {
             return true
         }
         return super.onOptionsItemSelected(item)
     }
 
-    fun initQuizDataFromXMLFile(){
-        AsyncTask.execute{
+    fun initQuizDataFromXMLFile() {
+        AsyncTask.execute {
             val stream = assets.open("quizzes.xml")
 
             val docBiulder = DocumentBuilderFactory
@@ -113,7 +120,7 @@ class MainActivity : AppCompatActivity() {
 
             val quizzesFromXMLDoc = doc.getElementsByTagName("quiz")
             val quizList = mutableListOf<Quiz>()
-            for(idx in 0 until quizzesFromXMLDoc.length){
+            for (idx in 0 until quizzesFromXMLDoc.length) {
 
 //                org.w3w.dom 패키지의 Element 클래스 import
                 val e = quizzesFromXMLDoc.item(idx) as Element
@@ -123,30 +130,38 @@ class MainActivity : AppCompatActivity() {
                 val answer = e.getElementsByTagName("answer").item(0).textContent
                 val category = e.getElementsByTagName("category").item(0).textContent
 
-                when(type){
+//                Log.d("mytag", type)
+//                Log.d("mytag", question)
+
+                when (type) {
                     "ox" -> {
                         quizList.add(
-                            Quiz(type = type,
-                            question =  question,
-                            answer =  answer,
-                            category = category)
+                            Quiz(
+                                type = type,
+                                question = question,
+                                answer = answer,
+                                category = category
+                            )
                         )
                     }
                     "multiple_choice" -> {
                         var choices = e.getElementsByTagName("choice")
                         var choiceList = mutableListOf<String>()
-                        for(idx in 0 until choices.length) {
+                        for (idx in 0 until choices.length) {
                             choiceList.add(choices.item(idx).textContent)
                         }
                         quizList.add(
-                            Quiz(type=type, question=question,
-                                answer=answer, category=category,
-                                guesses=choiceList))
+                            Quiz(
+                                type = type, question = question,
+                                answer = answer, category = category,
+                                guesses = choiceList
+                            )
+                        )
                     }
                 }
-                for(quiz in quizList){
-                    db.quizDAO().insert(quiz)
-                }
+            }
+            for (quiz in quizList) {
+                db.quizDAO().insert(quiz)
             }
         }
     }
