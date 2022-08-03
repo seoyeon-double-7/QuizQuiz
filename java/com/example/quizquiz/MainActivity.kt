@@ -5,18 +5,14 @@ import android.content.SharedPreferences
 import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
 import android.view.MenuItem
-import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
-import androidx.room.Entity
 import com.example.quizquiz.database.Quiz
 import com.example.quizquiz.database.QuizDatabase
 import org.w3c.dom.Element
-import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
 
 class MainActivity : AppCompatActivity() {
@@ -70,6 +66,12 @@ class MainActivity : AppCompatActivity() {
                     supportFragmentManager
                         .beginTransaction()
                         .replace(R.id.frame, QuizListFragment())
+                        .commit()
+                }
+                R.id.quiz_add -> {
+                    supportFragmentManager
+                        .beginTransaction()
+                        .replace(R.id.frame, QuizCreateFragment())
                         .commit()
                 }
             }

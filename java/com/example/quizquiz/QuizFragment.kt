@@ -7,10 +7,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.example.quizquiz.database.Quiz
 import com.example.quizquiz.database.QuizDatabase
-import kotlin.math.log
 
 class QuizFragment : Fragment(),
     QuizStartFragment.QuizStartListener,
@@ -31,6 +29,7 @@ class QuizFragment : Fragment(),
     }
 
     override fun onAnswerSelected(isCorrect: Boolean) {
+        if(isCorrect) correctCount++
         currentQuizIdx++
 
         if(currentQuizIdx == quizList.size){
@@ -40,13 +39,13 @@ class QuizFragment : Fragment(),
                     QuizResultFragment.newInstance(correctCount, quizList.size))
                 .commit()
         }else{
-            if(isCorrect) {
-                correctCount++
-                Toast.makeText(activity, "정답!", Toast.LENGTH_SHORT).show()
-            }
-            else {
-                Toast.makeText(activity, "오답!", Toast.LENGTH_SHORT).show()
-            }
+//            if(isCorrect) {
+//                correctCount++
+//                Toast.makeText(activity, "정답!", Toast.LENGTH_SHORT).show()
+//            }
+//            else {
+//                Toast.makeText(activity, "오답!", Toast.LENGTH_SHORT).show()
+//            }
             childFragmentManager
                 .beginTransaction()
                 .replace(R.id.fragment_container,

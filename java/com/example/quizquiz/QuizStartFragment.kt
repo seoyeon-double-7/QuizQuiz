@@ -9,7 +9,10 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import java.lang.Exception
 
-class QuizStartFragment : Fragment() {
+class QuizStartFragment : Fragment() ,
+        QuizSolveFragment.QuizSolveListener
+
+{
     interface QuizStartListener{
         fun onQuizStart()
     }
@@ -46,4 +49,8 @@ class QuizStartFragment : Fragment() {
     }
 
     companion object {}
+
+    override fun onAnswerSelected(isCorrect: Boolean) {
+        TODO("Not yet implemented")
+    }
 }

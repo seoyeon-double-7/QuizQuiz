@@ -73,6 +73,7 @@ class QuizSolveFragment : Fragment(){
                     var  btn = Button(activity)
                     btn.text = sign
                     btn.setOnClickListener(answerSelectListener)
+                    btn.isAllCaps = false   //소문자로 변경해줌
                     choices.addView(btn)
                 }
             }
@@ -81,6 +82,7 @@ class QuizSolveFragment : Fragment(){
                     var  btn = Button(activity)
                     btn.text = sign
                     btn.setOnClickListener(answerSelectListener)
+                    btn.isAllCaps = false
                     choices.addView(btn)
                 }
             }
